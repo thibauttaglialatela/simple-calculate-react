@@ -56,7 +56,7 @@ function App() {
             result = prev - next;
             break;
           case "X":
-            result = prev * next;
+            result = Math.round((prev * next) *100) / 100;
             break;
           case "/":
             if (next === 0) {
@@ -65,7 +65,7 @@ function App() {
                 errorMessage: "La division par zéro est interdite",
               };
             }
-            result = prev / next;
+            result = Math.round((prev / next) *100) / 100;
             break;
           default:
             return state;
@@ -104,7 +104,7 @@ function App() {
     <div>
       <input type="text" value={state.displayValue} readOnly />
       <div className="keypad">
-        {[7, 8, 9, 4, 5, 6, 1, 2, 3, 0].map((item, index) => (
+        {[7, 8, 9, 4, 5, 6, 1, 2, 3, 0, '.'].map((item, index) => (
           <Button
             buttonText={item}
             key={index}
