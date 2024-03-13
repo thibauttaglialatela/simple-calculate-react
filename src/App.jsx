@@ -13,6 +13,10 @@ function App() {
 
   function reducer(state, action) {
     switch (action.type) {
+      case 'reset':
+        return {
+          ...initialState,
+        };
       case "inputDigit":
         return {
           ...state,
@@ -37,6 +41,7 @@ function App() {
           operator: action.operator,
           prevValue: state.displayValue,
           waitingForOperand: true,
+          errorMessage: "",
         };
       case "calculateResult":
         const { operator, prevValue, displayValue, errorMessage } = state;
@@ -54,10 +59,13 @@ function App() {
             result = prev * next;
             break;
           case "/":
-            result =
-              next !== 0
-                ? prev / next
-                : alert("La division par zéro est interdite");
+            if (next === 0) {
+              return {
+                ...state,
+                errorMessage: "La division par zéro est interdite",
+              };
+            }
+            result = prev / next;
             break;
           default:
             return state;
@@ -67,6 +75,7 @@ function App() {
           operator: null,
           prevValue: result,
           waitingForOperand: true,
+          errorMessage: "",
         };
       default:
         return state;
@@ -87,6 +96,10 @@ function App() {
     dispatch({ type: "calculateResult" });
   };
 
+  const handleReset = () => {
+    dispatch({ type: 'reset'});
+  };
+
   return (
     <div>
       <input type="text" value={state.displayValue} readOnly />
@@ -103,7 +116,11 @@ function App() {
         <Button handleClick={() => handleOperatorClick("X")} buttonText="X" />
         <Button handleClick={() => handleOperatorClick("/")} buttonText="/" />
         <Button handleClick={() => handleEqualsClick()} buttonText="=" />
+        <Button handleClick={() => handleReset()} buttonText="reset" />
       </div>
+      {
+        state.errorMessage && <p>{state.errorMessage}</p>
+      }
     </div>
   );
 }
