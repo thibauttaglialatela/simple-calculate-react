@@ -8,6 +8,7 @@ const initialState = {
   operator: null,
   prevValue: null,
   waitingForOperand: false,
+  errorMessage:'',
 };
 
 function reducer(state, action) {
@@ -27,7 +28,7 @@ function reducer(state, action) {
         waitingForOperand: true,
       };
     case 'calculateResult':
-      const { operator, prevValue, displayValue } = state;
+      const { operator, prevValue, displayValue, errorMessage } = state;
       const prev = parseFloat(prevValue);
       const next = parseFloat(displayValue);
       let result = 0;
@@ -40,6 +41,9 @@ function reducer(state, action) {
           break;
         case 'X':
           result = prev * next;
+          break;
+        case '/':
+          next !== 0 ? result = prev / next: state.errorMessage = 'division par zéro !!!'
           break;
         default:
           return state;
@@ -81,8 +85,10 @@ return (
       <Button handleClick={() => handleOperatorClick('+')} buttonText="+" />
       <Button handleClick={() => handleOperatorClick('-')} buttonText="-" />
       <Button handleClick={() => handleOperatorClick('X')} buttonText="X" />
+      <Button handleClick={() => handleOperatorClick('/')} buttonText="/" />
       <Button handleClick={() => handleEqualsClick()} buttonText="=" />
     </div>
+    <p>{state.errorMessage}</p>
   </div>
 );
 }
